@@ -188,6 +188,9 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
 .cma-exit-arrow{display:flex;align-items:center;color:#7ed0b8;font-size:22px;font-weight:800;}
 .cma-exit-gap{text-align:center;font-size:34px;font-weight:800;color:#8fe0c9;margin-top:18px;font-variant-numeric:tabular-nums;}
 .cma-exit-gap span{display:block;font-size:14px;font-weight:600;color:#d7e7e1;margin-top:2px;}
+.cma-exit-stat{margin:16px auto 0;max-width:440px;text-align:center;font-size:12.5px;line-height:1.5;
+  color:#bcd6ce;border-top:1px solid rgba(255,255,255,.12);padding-top:14px;}
+.cma-choose-lead{text-align:center;font-size:16px;font-weight:700;color:var(--ink);margin:8px 0 14px;}
 @media(max-width:560px){ .cma-exit-cmp{flex-direction:column;} .cma-exit-arrow{transform:rotate(90deg);justify-content:center;height:22px;}
   .cma-exit-desc{min-height:0;} .cma-exit-val{font-size:22px;} .cma-exit-gap{font-size:28px;} }
 
@@ -473,7 +476,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
         '<p class="cma-block-lbl">Every year you stay put</p>'+
         '<div class="cma-levers">'+
           lever('Cost &amp; tax savings','A proactive accountant typically finds around 2% of turnover in tax reliefs and cost efficiencies.',money(v.savings)+'/yr')+
-          lever('Growth left on the table','Real advice surfaces sales and margin opportunities worth around '+pctTxt(demo.ind.growth)+'% of turnover.',money(v.growth)+'/yr')+
+          lever('Growth left on the table','Real advice uncovers sales and margin opportunities worth around '+pctTxt(demo.ind.growth)+'% of turnover.',money(v.growth)+'/yr')+
         '</div>'+
         '<p class="cma-annual">Roughly <b>'+money(v.annual)+' a year</b> in profit left on the table.</p>'+
         '<div class="cma-exit">'+
@@ -484,37 +487,30 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
             '<div class="cma-exit-card win"><span class="cma-exit-tag">Well-run &amp; growing</span><span class="cma-exit-desc">Around '+mult(v.improved)+' turnover, with stronger systems and profitability on the way there</span><span class="cma-exit-val">'+money(v.impVal)+'</span></div>'+
           '</div>'+
           '<div class="cma-exit-gap">+'+money(v.gap)+'<span>more in your pocket the day you sell</span></div>'+
+          '<p class="cma-exit-stat">Industry research suggests only around 1 in 2,000 businesses ever sell for their target value — the difference is almost always how well-run and sellable they are.</p>'+
         '</div>'+
         '<p class="cma-fine cma-center" style="max-width:540px;margin:16px auto 0">Illustrative figures for a business your size in your sector — not a promise, and few reach the top multiple. But the gap is real: it is the difference between running a business and building a sellable asset, and it compounds every year you wait.</p>'+
-        '<div class="cma-center" style="margin-top:22px"><button class="cma-btn cma-btn-lg" id="cma-tochoice">So where does that leave me?</button></div>'+
-      '</div>'
-    );
-    $('#cma-tochoice').on('click', showChoice);
-  }
-  function lever(title,desc,amt){ return '<div class="cma-lever"><div class="cma-lever-body"><h4>'+title+'</h4><p>'+desc+'</p></div><div class="cma-lever-amt">'+amt+'</div></div>'; }
-
-  /* ---------- 6. THREE-WAY CHOICE (email already captured, so branches are frictionless) ---------- */
-  function showChoice(){
-    app.html(
-      '<div class="cma-card">'+
-        headByline('No pressure at all — this is your call. Where are you right now?')+
-        '<h2 class="cma-gate-h" style="margin-bottom:20px">What would you like to do next?</h2>'+
-        '<div class="cma-choices">'+
-          choice('stay','Nothing for now','That was genuinely useful, but I\'m happy where I am.')+
-          choice('learn','Keep me in the loop','Send me practical, no-jargon tips on understanding my numbers and building a more valuable business.')+
-          choice('help','I\'d like some help','Connect me with a proactive accountant who can guide me — no obligation.',true)+
+        // the three options live here on the results page, so the numbers stay in view
+        '<div class="cma-choices" style="margin-top:10px">'+
+          '<p class="cma-choose-lead">So — where does that leave you? No pressure, it is entirely your call.</p>'+
+          choice('stay','Do nothing','Nothing changes — and that is completely your call.')+
+          choice('learn','Email these numbers to me, and keep in touch','Send me a copy to keep, plus practical, no-jargon advice — no pressure, just useful for when the time is right.')+
+          choice('help','Request a call','Connect me with a proactive accountant who can guide me — no obligation.',true)+
         '</div>'+
       '</div>'
     );
     $('.cma-choice').on('click', function(){ var k=$(this).data('k'); if(k==='stay') branchStay(); else if(k==='learn') branchLearn(); else branchHelp(); });
   }
+  function lever(title,desc,amt){ return '<div class="cma-lever"><div class="cma-lever-body"><h4>'+title+'</h4><p>'+desc+'</p></div><div class="cma-lever-amt">'+amt+'</div></div>'; }
+
+  /* ---------- 6. THREE-WAY CHOICE — now rendered INLINE on the results page (see showCost) ---------- */
   function choice(k,title,sub,primary){ return '<button class="cma-choice'+(primary?' primary':'')+'" data-k="'+k+'">'+
     '<span class="cma-choice-t">'+title+(primary?' <em>recommended</em>':'')+'</span><span class="cma-choice-s">'+sub+'</span></button>'; }
 
   /* ---------- 7a. STAY (report already emailed — no form) ---------- */
   function branchStay(){ doneMsg('No problem at all','Genuinely glad it was useful. Your full report is already in your inbox to keep — no follow-up calls, no pressure. All the best with the business.'); }
   /* ---------- 7b. KEEP IN LOOP (we already have the email — one tap) ---------- */
-  function branchLearn(){ doneMsg('You\'re in','Nice one'+(demo.name?', '+esc(demo.name.split(/\s+/)[0]):'')+'. I\'ll keep you posted with genuinely useful, no-jargon guidance on understanding your numbers and building a business worth more — plus the best independent resources and tools for owners like you. And if you ever fancy hands-on help, you\'re one reply away.'); }
+  function branchLearn(){ doneMsg('On its way','Your numbers are heading to your inbox'+(demo.name?', '+esc(demo.name.split(/\s+/)[0]):'')+' — a copy to keep. I\'ll also keep you posted with genuinely useful, no-jargon guidance on understanding your numbers and building a business worth more, plus the best independent resources for owners like you. No pressure — and if you ever fancy hands-on help, you\'re one reply away.'); }
   /* ---------- 7c. HELP (the £50 lead — now just phone + business, rest already known) ---------- */
   function branchHelp(){
     app.html(
@@ -547,7 +543,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
 
   /* demo entry (a query param lets the screenshot script jump to any screen) */
   var start=(new URLSearchParams(location.search)).get('s')||'score';
-  var map={score:showScore, gate:showGate, report:showReport, inputs:showInputs, cost:showCost, choice:showChoice, stay:branchStay, learn:branchLearn, help:branchHelp};
+  var map={score:showScore, gate:showGate, report:showReport, inputs:showInputs, cost:showCost, choice:showCost, stay:branchStay, learn:branchLearn, help:branchHelp};
   if(start!=='score'&&start!=='gate'){ demo.name='Sam Carter'; demo.email='sam@example.co.uk'; }
   if(start!=='score'&&start!=='gate'&&start!=='report'){ demo.ind=SECTORS[4]; demo.turnoverMid=750000; demo.turnoverLabel='£500k – £1m'; demo.recurring='mid'; demo.owner='mostly'; demo.concentration='no'; }
   (map[start]||showScore)();
