@@ -191,6 +191,16 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
 .cma-exit-stat{margin:16px auto 0;max-width:440px;text-align:center;font-size:12.5px;line-height:1.5;
   color:#bcd6ce;border-top:1px solid rgba(255,255,255,.12);padding-top:14px;}
 .cma-choose-lead{text-align:center;font-size:16px;font-weight:700;color:var(--ink);margin:8px 0 14px;}
+
+/* adjustable turnover control for the open-ended £5m+ band */
+.cma-adjust{background:var(--mint);border:1px dashed #a9ccc1;border-radius:12px;padding:14px 16px;margin:0 0 20px;}
+.cma-adjust p{margin:0 0 10px;font-size:13.5px;line-height:1.5;color:var(--muted);}
+.cma-adjust p b{color:var(--ink);}
+.cma-adjust-row{display:flex;align-items:center;gap:8px;}
+.cma-adjust-cur{font-size:18px;font-weight:800;color:var(--ink);}
+.cma-adjust-row input{flex:1;max-width:240px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;
+  font-size:16px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;background:#fff;}
+.cma-adjust-row input:focus{outline:none;border-color:var(--teal);}
 @media(max-width:560px){ .cma-exit-cmp{flex-direction:column;} .cma-exit-arrow{transform:rotate(90deg);justify-content:center;height:22px;}
   .cma-exit-desc{min-height:0;} .cma-exit-val{font-size:22px;} .cma-exit-gap{font-size:28px;} }
 
@@ -272,7 +282,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
   ];
   var TURNOVER = [
     {label:'£0 – £250k', mid:125000},{label:'£250k – £500k', mid:375000},{label:'£500k – £1m', mid:750000},
-    {label:'£1m – £2.5m', mid:1750000},{label:'£2.5m – £5m', mid:3750000},{label:'£5m +', mid:7500000}
+    {label:'£1m – £2.5m', mid:1750000},{label:'£2.5m – £5m', mid:3750000},{label:'£5m +', mid:10000000, open:true}
   ];
   var SAVINGS_PCT = 0.02;
   var REC_ADJ={under:-0.2,mid:0,over:0.3}, OWN_ADJ={no:-0.3,mostly:0.2,fully:0.4}, CON_ADJ={yes:-0.2,no:0,ns:-0.1};
@@ -291,7 +301,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
   }
   function mult(x){ return x.toFixed(1)+'x'; }
 
-  var demo = { score:56, name:'', email:'', ind:null, turnoverMid:null, turnoverLabel:'', recurring:'', owner:'', concentration:'' };
+  var demo = { score:56, name:'', email:'', ind:null, turnoverMid:null, turnoverLabel:'', turnoverOpen:false, recurring:'', owner:'', concentration:'' };
 
   // sample report — in the live build this is Colin's per-lead AI report (and the voice reads it verbatim)
   var SAMPLE_REPORT =
@@ -460,7 +470,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
       var ii=$('#i-ind').val(), ti=$('#i-turn').val();
       var rec=$('.cma-pill.sel[data-g="rec"]').data('v'), own=$('.cma-pill.sel[data-g="own"]').data('v'), con=$('.cma-pill.sel[data-g="con"]').data('v');
       if(ii===''||ti===''||!rec||!own||!con){ $('#cma-in-err').text('Just these five, so I can make the numbers real for you.'); return; }
-      demo.ind=SECTORS[+ii]; demo.turnoverMid=TURNOVER[+ti].mid; demo.turnoverLabel=TURNOVER[+ti].label;
+      demo.ind=SECTORS[+ii]; demo.turnoverMid=TURNOVER[+ti].mid; demo.turnoverLabel=TURNOVER[+ti].label; demo.turnoverOpen=!!TURNOVER[+ti].open;
       demo.recurring=rec; demo.owner=own; demo.concentration=con; showCost();
     });
   }
@@ -473,20 +483,26 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
       '<div class="cma-card">'+
         headByline('Here\'s what a genuinely proactive accountant tends to be worth to a '+esc(demo.turnoverLabel)+' '+shortSec+'business — and how much of it a '+demo.score+'% is leaving on the table.')+
         '<h2 class="cma-gate-h" style="margin-bottom:16px">What staying put is quietly costing you</h2>'+
+        (demo.turnoverOpen?
+          '<div class="cma-adjust">'+
+            '<p>You picked £5m+, so we don\'t know your exact turnover — these figures are based on <b>£10m</b>. Change it and everything below updates instantly:</p>'+
+            '<div class="cma-adjust-row"><span class="cma-adjust-cur">£</span><input id="cma-adj-turn" type="text" inputmode="numeric" value="'+demo.turnoverMid.toLocaleString('en-GB')+'"/></div>'+
+          '</div>'
+        :'')+
         '<p class="cma-block-lbl">Every year you stay put</p>'+
         '<div class="cma-levers">'+
-          lever('Cost &amp; tax savings','A proactive accountant typically finds around 2% of turnover in tax reliefs and cost efficiencies.',money(v.savings)+'/yr')+
-          lever('Growth left on the table','Real advice uncovers sales and margin opportunities worth around '+pctTxt(demo.ind.growth)+'% of turnover.',money(v.growth)+'/yr')+
+          lever('Cost &amp; tax savings','A proactive accountant typically finds around 2% of turnover in tax reliefs and cost efficiencies.','<span id="v-savings">'+money(v.savings)+'/yr</span>')+
+          lever('Growth left on the table','Real advice uncovers sales and margin opportunities worth around '+pctTxt(demo.ind.growth)+'% of turnover.','<span id="v-growth">'+money(v.growth)+'/yr</span>')+
         '</div>'+
-        '<p class="cma-annual">Roughly <b>'+money(v.annual)+' a year</b> in profit left on the table.</p>'+
+        '<p class="cma-annual">Roughly <b id="v-annual">'+money(v.annual)+'</b> a year in profit left on the table.</p>'+
         '<div class="cma-exit">'+
           '<p class="cma-block-lbl">The big one — what your business is worth when you sell</p>'+
           '<div class="cma-exit-cmp">'+
-            '<div class="cma-exit-card"><span class="cma-exit-tag">Sell as you are</span><span class="cma-exit-desc">A typical '+shortSec+'business like yours sells for around '+mult(v.current)+' turnover</span><span class="cma-exit-val">'+money(v.curVal)+'</span></div>'+
+            '<div class="cma-exit-card"><span class="cma-exit-tag">Sell as you are</span><span class="cma-exit-desc">A typical '+shortSec+'business like yours sells for around <span id="v-curmult">'+mult(v.current)+'</span> turnover</span><span class="cma-exit-val" id="v-curval">'+money(v.curVal)+'</span></div>'+
             '<div class="cma-exit-arrow">&rarr;</div>'+
-            '<div class="cma-exit-card win"><span class="cma-exit-tag">Well-run &amp; growing</span><span class="cma-exit-desc">Around '+mult(v.improved)+' turnover, with stronger systems and profitability on the way there</span><span class="cma-exit-val">'+money(v.impVal)+'</span></div>'+
+            '<div class="cma-exit-card win"><span class="cma-exit-tag">Well-run &amp; growing</span><span class="cma-exit-desc">Around <span id="v-impmult">'+mult(v.improved)+'</span> turnover, with stronger systems and profitability on the way there</span><span class="cma-exit-val" id="v-impval">'+money(v.impVal)+'</span></div>'+
           '</div>'+
-          '<div class="cma-exit-gap">+'+money(v.gap)+'<span>more in your pocket the day you sell</span></div>'+
+          '<div class="cma-exit-gap"><span id="v-gap">+'+money(v.gap)+'</span><span>more in your pocket the day you sell</span></div>'+
           '<p class="cma-exit-stat">Industry research suggests only around 1 in 2,000 businesses ever sell for their target value — the difference is almost always how well-run and sellable they are.</p>'+
         '</div>'+
         '<p class="cma-fine cma-center" style="max-width:540px;margin:16px auto 0">Illustrative figures for a business your size in your sector — not a promise, and few reach the top multiple. But the gap is real: it is the difference between running a business and building a sellable asset, and it compounds every year you wait.</p>'+
@@ -499,6 +515,20 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
         '</div>'+
       '</div>'
     );
+    function paint(vv){
+      $('#v-savings').text(money(vv.savings)+'/yr'); $('#v-growth').text(money(vv.growth)+'/yr');
+      $('#v-annual').text(money(vv.annual)); $('#v-curmult').text(mult(vv.current)); $('#v-curval').text(money(vv.curVal));
+      $('#v-impmult').text(mult(vv.improved)); $('#v-impval').text(money(vv.impVal)); $('#v-gap').text('+'+money(vv.gap));
+    }
+    if(demo.turnoverOpen){
+      $('#cma-adj-turn').on('input', function(){
+        var n=parseInt(($(this).val()||'').replace(/[^0-9]/g,''),10);
+        if(!isNaN(n)&&n>0){ demo.turnoverMid=n; paint(computeValuation(demo)); }
+      }).on('blur', function(){
+        var n=parseInt(($(this).val()||'').replace(/[^0-9]/g,''),10);
+        if(!isNaN(n)&&n>0) $(this).val(n.toLocaleString('en-GB'));
+      });
+    }
     $('.cma-choice').on('click', function(){ var k=$(this).data('k'); if(k==='stay') branchStay(); else if(k==='learn') branchLearn(); else branchHelp(); });
   }
   function lever(title,desc,amt){ return '<div class="cma-lever"><div class="cma-lever-body"><h4>'+title+'</h4><p>'+desc+'</p></div><div class="cma-lever-amt">'+amt+'</div></div>'; }
@@ -543,9 +573,10 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
 
   /* demo entry (a query param lets the screenshot script jump to any screen) */
   var start=(new URLSearchParams(location.search)).get('s')||'score';
-  var map={score:showScore, gate:showGate, report:showReport, inputs:showInputs, cost:showCost, choice:showCost, stay:branchStay, learn:branchLearn, help:branchHelp};
+  var map={score:showScore, gate:showGate, report:showReport, inputs:showInputs, cost:showCost, cost5m:showCost, choice:showCost, stay:branchStay, learn:branchLearn, help:branchHelp};
   if(start!=='score'&&start!=='gate'){ demo.name='Sam Carter'; demo.email='sam@example.co.uk'; }
   if(start!=='score'&&start!=='gate'&&start!=='report'){ demo.ind=SECTORS[4]; demo.turnoverMid=750000; demo.turnoverLabel='£500k – £1m'; demo.recurring='mid'; demo.owner='mostly'; demo.concentration='no'; }
+  if(start==='cost5m'){ demo.turnoverMid=10000000; demo.turnoverLabel='£5m +'; demo.turnoverOpen=true; }
   (map[start]||showScore)();
 })(jQuery);
 </script>
