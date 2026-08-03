@@ -501,7 +501,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
         '<h2 class="cma-gate-h" style="margin-bottom:20px">What would you like to do next?</h2>'+
         '<div class="cma-choices">'+
           choice('stay','Nothing for now','That was genuinely useful, but I\'m happy where I am.')+
-          choice('learn','Keep me in the loop','Send me practical tips on reading my numbers, plus the FiMBO sessions.')+
+          choice('learn','Keep me in the loop','Send me practical, no-jargon tips on understanding my numbers and building a more valuable business.')+
           choice('help','I\'d like some help','Connect me with a proactive accountant who can guide me — no obligation.',true)+
         '</div>'+
       '</div>'
@@ -514,7 +514,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
   /* ---------- 7a. STAY (report already emailed — no form) ---------- */
   function branchStay(){ doneMsg('No problem at all','Genuinely glad it was useful. Your full report is already in your inbox to keep — no follow-up calls, no pressure. All the best with the business.'); }
   /* ---------- 7b. KEEP IN LOOP (we already have the email — one tap) ---------- */
-  function branchLearn(){ doneMsg('You\'re in','Nice one'+(demo.name?', '+esc(demo.name.split(/\s+/)[0]):'')+'. I\'ll keep you posted with genuinely useful stuff on reading your numbers, plus early access to the FiMBO sessions. And if you ever fancy hands-on help, you\'re one reply away.'); }
+  function branchLearn(){ doneMsg('You\'re in','Nice one'+(demo.name?', '+esc(demo.name.split(/\s+/)[0]):'')+'. I\'ll keep you posted with genuinely useful, no-jargon guidance on understanding your numbers and building a business worth more — plus the best independent resources and tools for owners like you. And if you ever fancy hands-on help, you\'re one reply away.'); }
   /* ---------- 7c. HELP (the £50 lead — now just phone + business, rest already known) ---------- */
   function branchHelp(){
     app.html(
