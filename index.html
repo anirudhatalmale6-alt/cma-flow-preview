@@ -352,8 +352,8 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
     app.html(
       '<div class="cma-card">'+
         headByline('Your full verdict is ready — spoken and written. Where should I send you a copy to keep?')+
-        '<h2 class="cma-gate-h">Where should Colin send your report?</h2>'+
-        '<p class="cma-sub cma-center">Just your name and email. No spam, ever — and you can hear it right here on the next screen.</p>'+
+        '<h2 class="cma-gate-h">Where should I send your report?</h2>'+
+        '<p class="cma-sub cma-center">Just your name and email. I\'ll send your report now, and only genuinely useful bits after that — unsubscribe anytime. You can hear it right here on the next screen too.</p>'+
         '<div class="cma-fields">'+
           '<input id="g-name" placeholder="Your name*"/>'+
           '<input id="g-email" type="email" placeholder="Email address*"/>'+
@@ -379,7 +379,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
         headByline((first?esc(first)+', I\'ve':'I\'ve')+' been through your answers — here\'s my honest read on how your accountant is serving you.')+
         '<div id="cma-report-text" class="cma-report-text"></div>'+
         '<div class="cma-bridge">'+
-          '<p>That\'s the picture. Want to see what it actually means for your business — in pounds and pence?</p>'+
+          '<p>That\'s the diagnosis. Want to see what it actually means for your business — in pounds and pence?</p>'+
           '<button class="cma-btn cma-btn-lg" id="cma-tomoney">Show me what this means</button>'+
         '</div>'+
       '</div>'
@@ -481,7 +481,7 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
     var shortSec=demo.ind.short?esc(demo.ind.short)+' ':'';
     app.html(
       '<div class="cma-card">'+
-        headByline('Here\'s what a genuinely proactive accountant tends to be worth to a '+esc(demo.turnoverLabel)+' '+shortSec+'business — and how much of it a '+demo.score+'% is leaving on the table.')+
+        headByline('Here\'s what a genuinely proactive accountant tends to be worth to a '+esc(demo.turnoverLabel)+' '+shortSec+'business — and what a '+demo.score+'% score like yours is quietly costing you.')+
         '<h2 class="cma-gate-h" style="margin-bottom:16px">What staying put is quietly costing you</h2>'+
         (demo.turnoverOpen?
           '<div class="cma-adjust">'+
@@ -503,12 +503,12 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
             '<div class="cma-exit-card win"><span class="cma-exit-tag">Well-run &amp; growing</span><span class="cma-exit-desc">Around <span id="v-impmult">'+mult(v.improved)+'</span> turnover, with stronger systems and profitability on the way there</span><span class="cma-exit-val" id="v-impval">'+money(v.impVal)+'</span></div>'+
           '</div>'+
           '<div class="cma-exit-gap"><span id="v-gap">+'+money(v.gap)+'</span><span>more in your pocket the day you sell</span></div>'+
-          '<p class="cma-exit-stat">Industry research suggests only around 1 in 2,000 businesses ever sell for their target value — the difference is almost always how well-run and sellable they are.</p>'+
+          '<p class="cma-exit-stat">Most businesses never sell for their target value — the difference is almost always how well-run and sellable they are.</p>'+
         '</div>'+
-        '<p class="cma-fine cma-center" style="max-width:540px;margin:16px auto 0">Illustrative figures for a business your size in your sector — not a promise, and few reach the top multiple. But the gap is real: it is the difference between running a business and building a sellable asset, and it compounds every year you wait.</p>'+
+        '<p class="cma-fine cma-center" style="max-width:560px;margin:16px auto 0">Illustrative figures for a typical business in your turnover band and sector — not a promise, and few reach the top multiple. But the gap is real: it\'s the difference between selling a business and selling a job. It shows up two ways — the money you walk away with, and the life you lead until then. One business runs itself; the other runs you. And every year you wait, that gap gets wider.</p>'+
         // the three options live here on the results page, so the numbers stay in view
         '<div class="cma-choices" style="margin-top:10px">'+
-          '<p class="cma-choose-lead">So — where does that leave you? No pressure, it is entirely your call.</p>'+
+          '<p class="cma-choose-lead">So — what would you like to do? It\'s entirely your call.</p>'+
           choice('stay','Do nothing','Nothing changes — and that is completely your call.')+
           choice('learn','Email these numbers to me, and keep in touch','Send me a copy to keep, plus practical, no-jargon advice — no pressure, just useful for when the time is right.')+
           choice('help','Request a call','Connect me with a proactive accountant who can guide me — no obligation.',true)+
@@ -538,16 +538,16 @@ body{margin:0;background:#f2f6f4;padding:24px 0;}
     '<span class="cma-choice-t">'+title+(primary?' <em>recommended</em>':'')+'</span><span class="cma-choice-s">'+sub+'</span></button>'; }
 
   /* ---------- 7a. STAY (report already emailed — no form) ---------- */
-  function branchStay(){ doneMsg('No problem at all','Genuinely glad it was useful. Your full report is already in your inbox to keep — no follow-up calls, no pressure. All the best with the business.'); }
+  function branchStay(){ var fn=demo.name?', '+esc(demo.name.split(/\s+/)[0]):''; doneMsg('No problem at all','Genuinely glad it was useful'+fn+'. Your full report is already in your inbox to keep — no follow-up calls, you\'ll just have your report. And the door\'s always open if you ever change your mind.'); }
   /* ---------- 7b. KEEP IN LOOP (we already have the email — one tap) ---------- */
-  function branchLearn(){ doneMsg('On its way','Your numbers are heading to your inbox'+(demo.name?', '+esc(demo.name.split(/\s+/)[0]):'')+' — a copy to keep. I\'ll also keep you posted with genuinely useful, no-jargon guidance on understanding your numbers and building a business worth more, plus the best independent resources for owners like you. No pressure — and if you ever fancy hands-on help, you\'re one reply away.'); }
+  function branchLearn(){ doneMsg('On its way','Your numbers are heading to your inbox'+(demo.name?', '+esc(demo.name.split(/\s+/)[0]):'')+' — a copy to keep. I\'ll also keep you posted with genuinely useful, no-jargon guidance on understanding your numbers and building a more valuable business, plus the best independent resources for owners like you. Only when it\'s genuinely useful — and if you ever fancy hands-on help, you\'re one reply away.'); }
   /* ---------- 7c. HELP (the £50 lead — now just phone + business, rest already known) ---------- */
   function branchHelp(){
     app.html(
       '<div class="cma-card">'+
-        headByline('Great decision. I\'ve already got your report and the shape of your business — just the best way to reach you and I\'ll line you up with the right proactive accountant.')+
+        headByline('Great decision. I\'ve already got your report and the shape of your business — just give me the best way to reach you and I\'ll line you up with the right proactive accountant.')+
         '<h2 class="cma-gate-h">Let\'s connect you</h2>'+
-        '<p class="cma-sub cma-center">No calendars, no hard sell. Someone genuinely proactive, matched to your sector, in touch within 7-10 days.</p>'+
+        '<p class="cma-sub cma-center">I\'ll match you with someone genuinely proactive in your sector — no calendars to wrestle, and they\'ll be in touch within 7-10 days.</p>'+
         '<div class="cma-fields">'+
           '<div class="cma-row"><input id="h-phone" type="tel" placeholder="Best phone number*"/><input id="h-business" placeholder="Business name*"/></div>'+
           '<div class="cma-recap">'+esc(demo.name||'You')+' · '+esc(demo.email||'—')+' · '+esc(demo.ind?demo.ind.short||demo.ind.key:'')+' · '+esc(demo.turnoverLabel)+'</div>'+
